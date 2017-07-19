@@ -141,9 +141,9 @@ void main(void){
 			if(SBUF == 'A')	{while(!RI); RI = 0; Ani = SBUF;}
 			if(SBUF == '+') Delay = Delay + 50;
 			if(SBUF == '-') Delay = Delay - 50;
-			//if(SBUF == 'D') {if(A < 2){A++;}};
-			//if(SBUF == 'E') {if(A > 1){A--;}};
-			//if(SBUF == 'H') A = 0; D = 0;*/
+			if(SBUF == 'D') {if(A > 1){A--;}};//Bugado
+			if(SBUF == 'E') {if(A < 2){A++;}};//Bugado
+			//if(SBUF == 'H') A = 0; D = 0;//Bugado	*/
 			SBUF = 'A';
 			while(!TI);
 			TI = 0;
