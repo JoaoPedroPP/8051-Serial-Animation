@@ -14,6 +14,7 @@ bit L = 0;//Flag (0)indica que o cursor deve se mover para a direita, (1) para a
 unsigned int D = 0;
 unsigned int A = 0;
 unsigned char Ani;
+unsigned int Delay = 500;
 
 unsigned char lcdAddress[4][16] = {
 {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
@@ -76,6 +77,16 @@ void prog(){
 	TH1 = 0xFD;
 }
 
+void progS(){
+	TMOD = 0x20;//somente timer 1 habilitado
+	TH1 = 0xFD;
+	TL1 = 0xFD;
+	TR1 = 1;
+	SCON = 0x40;//Serial modo 1
+	REN = 1;
+//	TF1 = 0;
+}
+
 /*void EscreveInst(){
 	P2_3 = 0;
 	P2_2 = 1;
@@ -88,7 +99,8 @@ void Display_Inicia(){
 }
 */
 void main(void){
-	prog();
+	//prog();
+	progS();
 	lcdCMD(0x38);//Setup inicial
 	lcdCMD(0x06);//Setup inicial
 	lcdCMD(0x0C);//Setup inicial
@@ -112,10 +124,34 @@ void main(void){
 	delay(1000);*/
 	
 	while(1){
+		//REN = 1;
+		if(RI){
+			RI = 0;
+			switch (SBUF){
+				case '-':
+					Delay = Delay + 50;
+					break;
+				case '+':
+					Delay = Delay - 50;
+					break;
+				default:
+					Ani = SBUF;
+					break;
+			}/*
+			if(SBUF == 'A')	{while(!RI); RI = 0; Ani = SBUF;}
+			if(SBUF == '+') Delay = Delay + 50;
+			if(SBUF == '-') Delay = Delay - 50;
+			//if(SBUF == 'D') {if(A < 2){A++;}};
+			//if(SBUF == 'E') {if(A > 1){A--;}};
+			//if(SBUF == 'H') A = 0; D = 0;*/
+			SBUF = 'A';
+			while(!TI);
+			TI = 0;
+		}
 		lcdClear();
 		lcdSetCursor(A, D);
 		lcdWrite(Ani);
-		delay(500);
+		delay(Delay);
 		lcdClear();
 		if(!H) A++;
 		if(H) A--;
