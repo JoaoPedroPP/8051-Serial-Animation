@@ -25,7 +25,7 @@ unsigned int row = 0; // row position of the character
 unsigned char character; // the character!
 bit move = 1; // movement flag
 
-unsigned int Delay = 500; // Prestes a sumir
+unsigned int Delay = 200; // Prestes a sumir
 unsigned int Tm0 = 0;
 
 char rcvd = 0;
@@ -131,7 +131,7 @@ void main(void){
 	lcdCMD(0x06);	// Setup inicial
 	lcdCMD(0x0C);	// Setup inicial
 	
-	character = 'G';
+	character = '!';
 	
 	while(1) {
 
@@ -146,28 +146,23 @@ void main(void){
 				
 				case '5': move = ! move; break;
 				
-				case '-': if (move) Delay = Delay + 50; break;
+				case '-': if (move) Delay = Delay + 20; break;
 				
-				case '+': if (move) Delay = Delay - 50; break;
+				case '+': if (move) Delay = Delay > 20 ? Delay - 20 : Delay; break;
 				
-				case '2': incRow();lcdClear();
-			
-			lcdWrite(row, column, character); break;
-					
-				case '8': decRow();lcdClear();
-			
-			lcdWrite(row, column, character); break;
+				case '2': incRow(); break;
 				
-				case '4': decColumn();lcdClear();
-			
-			lcdWrite(row, column, character); break;
+				case '8': decRow(); break;
 				
-				case '6': incColumn(); lcdClear();
-			
-			lcdWrite(row, column, character);break;
+				case '4': decColumn(); break;
 				
-				default: if (move) character = SBUF; break;	
+				case '6': incColumn(); break;
+				
+				default: character = rcvd; break;	
 			}
+			
+			lcdClear();
+			lcdWrite(row, column, character);
 			
 		}
 		
